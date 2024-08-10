@@ -65,8 +65,8 @@ export const users = pgTable("user", {
       compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
     })
   );
-  
-  export const room = pgTable("room", {
+  // Creating Rooms
+  export const session = pgTable("room", {
     id: uuid("id")
       .default(sql`gen_random_uuid()`)
       .notNull()
@@ -80,4 +80,4 @@ export const users = pgTable("user", {
     githubRepo: text("githubRepo"),
   });
   
-  export type Room = typeof room.$inferSelect;
+  export type Session = typeof session.$inferSelect;
