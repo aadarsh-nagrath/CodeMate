@@ -1,9 +1,27 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
+import { drizzle, PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schema';
 // for query purposes
-const queryClient = postgres(process.env.DATABASE_URL!);
+//const queryClient = postgres(process.env.DATABASE_URL!);
 //connection url
-const db = drizzle(queryClient,{schema});
+//let db = drizzle(queryClient,{schema});
 
-export {db};
+
+// code to cache the sql postgres db to avoid running out of open connections issue while making url connection
+declare global {
+    // eslint-disable-next-line no-var -- only var works here
+    var db: PostgresJsDatabase<typeof schema> | undefined;
+  }
+  let db: PostgresJsDatabase<typeof schema>;
+  
+  if (process.env.NODE_ENV === "production") {
+    db = drizzle(postgres(process.env.DATABASE_URL!), { schema });
+  } else {
+    if (!global.db) {
+      global.db = drizzle(postgres(process.env.DATABASE_URL!), { schema });
+    }
+  
+    db = global.db;
+  }
+  
+  export { db };
