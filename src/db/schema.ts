@@ -68,7 +68,7 @@ export const users = pgTable("user", {
   // Creating Rooms
   export const session = pgTable("room", {
     id: uuid("id")
-      .default(sql`gen_random_uuid()`)
+      .default(sql`gen_random_uuid()`) // generating random id
       .notNull()
       .primaryKey(),
     userId: text("userId")
